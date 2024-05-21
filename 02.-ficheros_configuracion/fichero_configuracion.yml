@@ -1,0 +1,57 @@
+# EL FICHERO ansible.cfg PUEDE ESTAR EN:
+ANSIBLE_CONFIG - VARIABLE DE ENTORNO
+ansible.cfg - EN EL DIRECTORIO ACTUAL
+~/.ansible.cfg - EN EL DIRECTORIO HOME DEL USUARIO
+/etc/ansible/ansible.cfg
+# ANSIBLE BUSCARA ESTE FICHERO EN EL ORDEN ANTERIOR
+
+# NORMALMENTE CUANDO SE INSTALA ANSIBLE MEDIANTE UN GESTOR DE PAQUETES EL ARCHIVO SE ENCONTRARA EN /etc/ansible, SIN EMBARGO SI LO CONSTRUIMOS A MANO O UTILIZANDO OTRA UTILIDAD COMO EJEMPLO "pip" TENEMOS QUE GENERARLO INICIALMENTE.
+
+# CON ESTE COMANDO PODEMOS GENERAR EL ARCHIVO DE CONFIGURACION INICIAL CON EL PARAMETRO --disabled LES DICES QUE TE COMENTE TODO
+ansible-config init --disabled > ansible.cfg
+
+# PARA BUSCAR EL ARCHIVO DE CONFIGURACION LO MAS BASICO SERIA EJECUTAR EL COMANDO:
+ansible --version
+
+
+
+############################ INVENTARIOS ######################################
+# POR DEFECTO SI NO SE LO ESPECIFICAMOS ANSIBLE BUSCA EN /etc/ansible/hosts
+
+# EJEMPLO FORMATO INI
+datos1 
+
+[servidores_redhat]
+redhat1 ansible port=8090 #ESTO ES UNA VARIABLE
+redhat2
+
+[servidores_ubuntu]
+ubuntu1
+ubuntu2
+
+# EJEMPLO FORMATO YML
+all:
+  hosts:
+    datos1:
+  children:
+    servidores_redhat:
+      hosts:
+        redhat1: 8090 #ESTO ES UNA VARIABLE
+        redhat2:
+    servidores_ubuntu:
+      hosts:
+        ubuntu1:
+        ubuntu2:
+        
+
+# EL ORDEN ES IMPORTANTGE CUANDO SE ESPECIFICAN HOSTS
+ansible -i 01-uno -i 02-otro
+# SE CARGARIA PRIMERO "02-otro" Y DESPUES "01-uno" POR EL ORDEN ALFABETICO
+
+# LISTAR LOS HOSTS CON LOS QUE ESTOY TRABAJANDO
+ansible -i maquinas all --list-hosts
+
+# SI YA TIENES REGISTRADA LA RUTA DE TU INVENTARIO NO ES NECESARIO PONER LA RUTA 
+ansible all -m ping
+ansible redhat1 -m ping
+ansible grupo_redhats -m ping

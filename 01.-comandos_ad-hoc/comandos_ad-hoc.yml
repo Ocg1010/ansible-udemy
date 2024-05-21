@@ -1,0 +1,39 @@
+# EJECUTAR UN INVENTARIO (hosts) TODAS LAS MAQUINAS (all) Y PASARLE EL MODULO ping
+ansible -i hosts all -m ping
+# CORRER EL MODULO ping A TODAS LAS MAQUINAS QUE EMPIECEN POR ansible-nodes
+ansible -i hosts ansible-nodes* -m ping
+# EJECUTAR UN COMANDO EN ansible-node1 CON EL ARGUMENTO (-a) QUE ES EL COMANDO QUE QUIERO EJECUTAR
+ansible -i hosts ansible-node1 -m command -a "date"
+# CREAR UN ARCHIVO EN /tmp
+ansible -i hosts ansible-node1 -m command -a "touch /tmp/nuevo.txt"
+# EL MODULO COMMAND NO SE EJECUTA EN UNA SHELL DE LINUX EN CAMBIO EL MODULO SHELL SÍ LO HACE, ESTO DE NO EJECUTARSE EN UNA SHELL QUIERE DECIR QUE NO PUEDE HACER COSAS COMO FILTROS, TUBERIAS, CONCATENAR COMANDOS ACCEDER A LAS VARIABLES, ETC.
+ansible -i hosts ansible-node1 -m shell -a "ls -l | grep 'p' "
+
+
+################################## MODULO SETUP #########################################
+# MODULO QUE ARROJA INFORMACION DE LAS MAQUINAS EN FORMATO .json 
+ansible -i hosts ansible-node2 -m setup
+
+
+
+########################################### MODULO COPY ######################################
+ansible -i hosts ansible-node2 -m copy -a "src=prueba.txt dest=/tmp/prueba.txt"
+ansible -i hosts ansible-node2 -m copy -a "src=prueba.txt dest=/tmp/prueba.txt mode=777"
+
+
+################################ MODULOS MANAGES PACKAGES ######################################
+# INSTALANDO PAQUETE HTTPD CON YUM
+ansible -i hosts redhat1 -m yum -a "name=httpd state=present"
+# INSTALANDO PAQUETE APACHE CON APT
+ansible -i hosts ubuntu1d -m apt -a "name=apache2 state=present"
+
+###################################### MODULO SERVICE ###########################################
+# INICIANDO SERVICIO 
+ansible -i hosts redhat1 -m service -a "name=httpd state=started"
+
+################################## ESCALADA DE PRIVILEGIOS #####################################
+# DE ESTAS DOS MANERAS PUEDES SUBIR PRIVILEGIOS PARA CONECTARTE COMO ROOT POR DEFUALT
+ansible -i hosts ubuntu1 -b -m apt -a "name=apache2 state=present"
+ansible -i hosts ubuntu1 --become -m apt -a "name=apache2 state=present"
+#--ask-become-pass CON ESTO TE VA A PEDIR LA CONTRASEÑA DE ROOT
+ansible -i hosts ubuntu1 --become --ask-become-pass -m apt -a "name=apache2 state=present"

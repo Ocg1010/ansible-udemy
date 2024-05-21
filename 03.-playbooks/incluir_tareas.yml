@@ -1,0 +1,17 @@
+---
+- name: Instalar Nginx
+  hosts: RHEL
+  tasks:
+    - name: Parar apache2
+      include_tasks: parar_apache.yml
+
+    - name: Instalar Nginx
+      ansible.builtin.apt:
+        name: ngnix
+        state: present
+        update_cache: true
+
+    - name: Arrancar Ngnix
+      ansible.builtin.service:
+        name: ngnix
+        state: started
