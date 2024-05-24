@@ -1,0 +1,54 @@
+---
+- name: Instalar Tomcat 10
+  hosts: rhel1
+  vars:
+    url_descarga: https://dlcdn.apache.org/tomcat
+  tasks:
+    - name: Crear usuario
+      ansible.builtin.user:
+        name: tomcat
+
+    - name: crear grupo
+      ansible.builtin.group:
+        name: tomcat
+
+    - name: Instalar Java
+      ansible.builtin.dnf:
+        name: default-jdk
+        state: latest
+
+    - name: Crear un directorio para guardar tomcat
+      ansible.builtin.file:
+        path: /opt/tomcat
+        state: directory
+        group: tomcat
+        owner: tomcat
+        mode: 755
+        recurse: yes
+
+    - name: Descargamos y descomprimimos
+      ansible.builtin.unarchive:
+        src: "{{ url_descarga }}"
+        dest: /opt/tomcat
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+
+    - name: Cambiar el propietario del directorio de Tomcat
+      ansible.builtin.file:
+        path: /opt/tomcat
+        owner: tomcat
+        group: tomcat
+        mode: "u+rwx,g+rx,o=rx"
+        recurse: yes
+        state: directory
+
+    - name: Crear un fichero de servicio
+      ansible.builtin.copy:
+        contet: |-
+        [Unit]
+        Description=Mi servicioo de Tomcat
+
+    - name: Arrancar tomcat
+      ansible.builtin.service:
+      name: tomcat
+      state: started

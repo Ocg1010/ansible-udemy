@@ -1,0 +1,11 @@
+---
+- name: Mostrar Distribucion
+  hosts: windows
+  tasks:
+    - name: Distribucion
+      ansible.builtin.debug:
+        var: ansible_facts['distribution']
+
+    - name: Memoria
+      ansible.builtin.debug:
+        var: ansible_facts['memfree_mb']

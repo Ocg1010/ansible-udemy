@@ -1,0 +1,13 @@
+---
+- name:
+  hosts: 191.168.27.129
+  tasks:
+    - name: Parar servicio de audio
+      ansible.windows.win_service:
+        name: Audiosrv
+        state: stoppet
+
+    - name: Iniciar servicio de audio
+      ansible.windows.win_service:
+        name: Audiosrv
+        state: started

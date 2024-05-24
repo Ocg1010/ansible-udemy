@@ -1,0 +1,32 @@
+# PUEDES MODIFICAR LINEAS DE TEXTO PARA HACER SUSTITUCIONES
+---
+- name: Trabajr con lineinfile
+  hosts: rhel1
+  tasks:
+    - name: Copiar un fichero sencillo de ejemplo
+      ansible.builtin.copy:
+        src: ejemplo.txt
+        dest: /tmp/ejemplo.txt
+
+    - name: añadir un linea al fichero
+      ansible.builtin.lineinfile:
+        path: /tmp/ejemplo.txt
+        line: linea 4
+
+    - name: cambiar la linea1
+      ansible.builtin.lineinfile:
+        path: /tmp/ejemplo.txt
+        search_string: linea 1
+        line: he cmabiado la linea1
+
+    - name: Borrar la linea2
+      ansible.builtin.lineinfile:
+        path: /tmp/ejemplo.txt
+        search_string: linea 2
+        state: absent
+
+    - name: remplazar la linea 4
+      ansible.builtin.lineinfile:
+        path: /tmp/ejemplo.txt
+        regexp: "^linea 4"
+        line: "Cambiando con REGEX"

@@ -1,0 +1,19 @@
+[debian]
+debian1
+debian2
+
+[rhel]
+redhat1
+redhat2
+
+[debian:vars]
+puerto=9090
+
+# GRUPOS ANIDADOS
+[desarollo:children]
+debian
+rhel
+
+[desarollo:vars]
+ansible_user=ocantoran
+puerto=8080

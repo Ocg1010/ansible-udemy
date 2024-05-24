@@ -1,0 +1,19 @@
+---
+- name: Trabajar con ususarios
+  hosts: rhel1
+  tasks:
+    - name: Crear un usuario simple
+      ansible.builtin.user:
+        name: user1
+
+    - name: Crear un grupo
+      ansible.builtin.group:
+        name: grupo1
+        state: present
+
+    - name: Usuario con grupo
+      ansible.builtin.user:
+        name: user2
+        group: grupo1
+        shell: /bin/bash
+        home: /home/ocantoran

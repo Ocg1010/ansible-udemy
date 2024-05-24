@@ -1,0 +1,13 @@
+---
+- name:
+  hosts: all
+  tasks:
+    - name: Copiar ficero a Windows
+      ansible.windows.win_copy:
+        src: fichero.txt
+        dest: c:\prueba\fichero.txt
+
+    - name: Copiar contenido a Windows
+      ansible.windows.win_copy:
+        content: "Copiar ficheros a windows"
+        dest: c:\prueba\fichero.txt

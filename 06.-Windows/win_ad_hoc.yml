@@ -1,0 +1,8 @@
+ansible all -m win_ping
+ansible all -m win_command -a 'whoami'
+ansible all -m win_command -a 'java -version'
+ansible all -m win_command -a 'cmd.exe /c cd'
+ansible all -m win_command -a 'cmd.exe /c mkdir c:\prueba'
+
+# SHELL
+ansible all -m win_shell -a 'cmd.exe /c mkdir c:\prueba1'

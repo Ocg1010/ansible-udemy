@@ -1,0 +1,26 @@
+---
+- name: Trabajar con ficheros
+  hosts: rhel1
+  tasks:
+    - name: crear un fichero
+      ansible.builtin.file:
+        path: /tmp/prueba.txt
+        state: touch
+
+    - name: Cambiar permisos
+      ansible.builtin.file:
+        path: /tmp/prueba.txt
+        owner: ansible
+        group: ansible
+        mode: "0777"
+
+    - name: Borrar fichero anterior
+      ansible.builtin.file:
+        path: /tmp/prueba.txt
+        state: absent
+
+    - name: Borrar fichero anterior
+      ansible.builtin.file:
+        path: /tmp/directorio
+        state: directory
+        mode: "0755"

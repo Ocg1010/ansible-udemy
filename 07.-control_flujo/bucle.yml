@@ -1,0 +1,132 @@
+######## BUCLES
+# Disponemos de varios BUCLES
+
+# loop
+# whit_loockup with_items, whit_list, with_sequence
+# until
+---
+- name: Prueba baside con LOOP
+  hosts: debian1
+  tasks:
+    - name: Visualizar contenido con loop
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop:
+        - valor1
+        - valor2
+        - valor3
+
+- name: Prueba baside con With_iteams
+  hosts: debian1
+  tasks:
+    - name: Visualizar contenido con with_item
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      with_items:
+        - valor1
+        - valor2
+        - valor3
+
+  ########################## CREANDO GRUPOS#######################################
+- name: Prueba baside con LOOP
+  hosts: debian1
+  tasks:
+    - name: Creando varios grupos
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - grupo1
+        - grupo2
+        - grupo3
+
+    - name: Creando varios grupos con variable
+      vars:
+        grupos:
+          - grupo4
+          - grupo5
+          - grupo6
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ grupos  }}"
+
+######################## CREANDO USUARIOS ############################
+- name: Crear usuarios con bucles
+  hosts: rhel1
+  vars_files: list_usu.yml
+  tasks:
+    - name: Crear usuarios con un fichero externo
+      ansible.builtin.user:
+        name: "{{ item  }}"
+        state: present
+      loop: "{{ users }}"
+
+############################ LOOP CON DICCIONARIOS ###############
+- name: Otras pruebas
+  hosts: rhel1
+  tasks:
+    - name: Diccionarios
+      vars:
+        entorno:
+          nombre: desarrollo
+          responsable: Pedro
+          personas: 10
+      ansible.builtin.debug:
+        msg: "{{ item.key  }} {{ item.value  }}"
+      loop: "{{ entorno | dict2items }}"
+
+    - name: diccionarios with_item
+      vars:
+        entorno:
+          nombre: desarrollo
+          responsable: Pedro
+          personas: 10
+      ansible.builtin.debug:
+        msg: "{{ item.key }} {{ item.value }}"
+      with_dict: "{{ entorno }}"
+
+######################### BUCLES CON INVENTARIO ###############################
+- name: Otras pruebas con loop
+  hosts: rhel1
+  tasks:
+    - name: Ver las maquinas del inventario
+      ansible.builtin.debug:
+        msg: "{{ item  }}"
+      loop: "{{ groups['all']  }}"
+      register: resultado
+
+    - name: Copiar el resultado en mi rhel1
+      ansible,builtin.copy:
+        content: "{{ resultado  }}"
+        dest: /tmp/resultado.txt
+
+    - name: recuperar fichero
+      ansible.builtin.fetch:
+        src: /tmp/resultado.txt
+        dest: /tmp/resultado.txt
+        flat: true
+
+################################## INDICES CON LOOP ########################
+- name: Indices
+  ansible.builtin.debug:
+    msg: "{{ item  }} esta en la posicion {{ indice  }}"
+  loop:
+    - pepe
+    - juan
+    - antonio
+  loop_control:
+    index_var: indice
+  when: indice == 1
+
+############################ BUCLE UNTIL ##########################################
+- name: Until
+  hosts: rhel1
+  tasks:
+    - name: Repite una tarea hasta que cumple la condicion
+      ansible.builtin.shell:
+        cmd: cat /tmp/tarea1
+      register: result
+      until: result.stdout == "Fin de Proceso"
+      retries: 5
+      delay: 2

@@ -1,0 +1,19 @@
+[debian]
+debian1 puerto=9090 entorno=desarollo
+debian2
+
+[redhat]
+redhat1
+redhat2
+
+
+# FORMATO YAML
+all:
+  hosts:
+    ubuntu1:
+       puerto: 9000
+       entorno: desarrollo
+    debian1:
+    children:
+      debian:
+        hosts:

@@ -1,0 +1,18 @@
+ansible debian1 -m setup -a 'filter=ansible_system'
+ansible debian1 -m setup -a 'filter=ansible_system,ansible_os_fanily'
+---
+- name: Prueba con variables FACT
+  hosts: debian1
+  tasks:
+    - name: ver variables FACT
+      ansible.builtin.debug:
+        msg: "Arquitectura {{ ansible_facts['architecture'] }} {{ ansible_facts['bios_vendor'] }}  {{ ansible_facts['all_ipv4_addresses']['0'] }}"
+
+# DICCIONARIOS FAC
+---
+- name: Prueba con variables FACT
+  hosts: debian1
+  tasks:
+    - name: ver variables FACT
+      ansible.builtin.debug:
+        var: ansible_facts.date_time.day

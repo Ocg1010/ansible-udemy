@@ -1,0 +1,16 @@
+---
+- name: Trabajar con windows, instalar un paquete
+  hosts: 192.168.27.129
+  tasks:
+    - name: Descargar GIT
+      ansible.windows.win_get_url:
+        url: "https://github.com/git-for-windows/releases/download"
+        dest: c:\prueba\git.exe
+
+    - name: Instalar GIT
+      ansible.windows.win_package:
+        path: c:\prueba\git.exe
+        state: present
+        arguments:
+          - /VERYSILENT
+          - /NORESTART

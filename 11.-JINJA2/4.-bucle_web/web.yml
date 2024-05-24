@@ -1,0 +1,14 @@
+---
+- name: Tranakar con JINGA2. MONTAR APACHE
+  hosts: debian 1
+  vars:
+    productos:
+      - pera
+      - manzana
+      - fresa
+      - kiwi
+  tasks:
+    - name: copiar resultado
+      ansible.builtin.template:
+        src: bucles.j2
+        dest: /var/www/html/index.html

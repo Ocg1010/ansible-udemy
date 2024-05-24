@@ -1,0 +1,20 @@
+---
+- name: Prueba con variables
+  hosts: debian1
+  vars:
+    v1: "variable global"
+  tasks:
+    - name: variable local
+      vars:
+        v1: "prueba"
+      ansible.builtin.debug: msgL "Este valor es local {{ v1 }} "
+
+    - name: Variable local 2
+      vars:
+        v1: "adios"
+      ansible.builtin.debug:
+        msg: "Este valor es  {{ v1 }} "
+    # LA VARIABLE LOCAL SIEMPRE TIENE MAS PESO QUE LA GLOBAL
+    - name: Variable global
+      ansible.builtin.debug:
+        msg: "Este valor es  {{ v1 }} "

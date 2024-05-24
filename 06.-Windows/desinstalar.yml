@@ -1,0 +1,11 @@
+---
+- name: Desinstalar GIT
+  hosts: 192.168.1.10
+  tasks:
+    - name: desinstalar GIT
+      ansible.windows.win_package:
+        path: C\:program Files\Git\unins00.exe
+        state: absent
+        arguments:
+          - /VERYSILENT
+          - /NORESTART

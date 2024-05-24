@@ -1,0 +1,28 @@
+---
+- name: Prueba con When. Ignorar errores
+  hosts: debian1
+  tasks:
+    - name: Acceder a un fichero incorrecto
+      ansible.builtin.command:
+        cmd: ls /temporal
+      register: resultado
+      ignore_errors: true
+    # SI NO IGNORAMOS EL EROR NO PASARIA A LA SIGUIENTE TAREA
+
+    - name: visualizar Resultado
+      ansible.builtin.debug:
+        msg: "{{ resultado.stderr }}"
+      when: resultado.stderr != ""
+
+########################### IGNORAR SERVIDORES A LOS QUE NO PUEDO ACCEDER #########################
+- name: Control de errores
+  hosts: debain
+  ignore_unreachable: true
+  tasks:
+    - name: Visuzalizar un mensaje
+      ansible.builtin.debug:
+        msg: Mensaje de error
+    - name: Visuzalizar directorio principal
+      ansible.builtin.command:
+        cmd: ls -l /
+      #ignore_unreachable: true

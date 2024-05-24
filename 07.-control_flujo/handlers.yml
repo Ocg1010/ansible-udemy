@@ -1,0 +1,20 @@
+# SE UTILIZA PARA INVOCAR UNA DETERMINADA TAREA
+# SE USA EL COMANDO NOTIFY
+# SE EJECUTAN DESPUES DE TODAS LAS TAREAS DEL PLAY
+# NO PUEDEN REPERTISE NOMBRE EN EL PLAYBOOK, YA QUE SON GLOBALES
+# SOLO SE EJECUTAN UNA VEZ, AUQNUE HAYA 2 TAREAS QUE LOS INVOQUEN
+---
+- name: Ejempllo de un handler
+  hosts: debian1
+  tasks:
+    - name: Copiar index.html a /var/www/html
+      ansible.builtin.copy:
+        src: index1.html
+        dest: /var/www/html
+      notify:
+        - rebotar_apache
+  handlers:
+    - name: rebotar_apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted

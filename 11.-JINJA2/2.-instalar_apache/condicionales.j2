@@ -1,0 +1,16 @@
+{ # Se utulizan las mismas que en Ansible
+ == != > < >= <= === =>
+ se utiliza 
+ if
+ else
+ endif
+ #}
+
+<h1> Bienvenido a mi pagina web de ansible </h1>
+{% if ansible_distribution == 'Debian' %}
+    <h2> Estoy en una maquina Debian </h2>
+{% else %}
+    <h2> Estoy en una maquina Rocky </h2>
+{% endif %}
+
+

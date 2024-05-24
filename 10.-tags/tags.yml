@@ -1,0 +1,93 @@
+---
+- name: Trabajar con TAGS
+  hosts: rhel1
+  tasks:
+    - name: Preaprar desarrolo
+      ansible.builtin.debug:
+        msg: "Preparar el entorno de desarrollo"
+      tags:
+        - desarrollo
+        -
+    - name: Preparar produccion
+      ansible.builtin.debug:
+        msg: "Preparar el entorno de produccion"
+      tags:
+        - produccion
+
+    - name: Instalar mysql
+      ansible.builtin.debug:
+        msg: "Instalando mysql"
+      tags:
+        - produccion
+        - desarrollo
+
+    - name: Instalar herramientas desarrollo
+      ansible.builtin.debug:
+        msg: "Proceso terminado"
+      tags:
+        - desarrollo
+
+    - name: Instalar la seguridad de produccion
+      ansible.builtin.debug:
+        msg: "Instalar el entorno de seguridad"
+      tags: produccion
+
+    - name: Desplegar aplicacion
+      ansible.builtin.debug:
+        msg: "Desplegar aplciacion"
+        tags:
+          - produccion
+          - desarrollo
+
+    - name: Con never
+      ansible.builtin.debug:
+        msg: Etiqueta never
+      tags:
+        - never
+
+    - name: Con always
+      ansible.builtin.debug:
+        msg: Etiqueta never
+      tags:
+        - always
+
+
+######################### ETIQUETAS EN PLAYS ###########################
+- name: Primer play
+  hosts: devbian1
+  tags: debian
+  tasks: 
+    - name: Estoy en DEBIAN
+      ansible.builtin.debug:
+        msg: estoy en debian
+
+- name: Segundo play
+  hosts: rhel1
+  tags: rhel
+  tasks:
+    - name: estoy en rhel
+      ansible.buiiltin.debug:
+        msg: Estoy en rhel
+
+
+
+
+
+# COMANDO POR DEFECTO
+ansible-playbook tags.yml -t all
+# COMANDOS PARA LANZAR
+ansible-playbook tags.yml -t "produccion"
+ansible-playbook tags.yml -t "desarrollo"
+ansible-playbook tags.yml -t "desarrollo,test"
+# LISTAR ETIQUETAS
+ansible-playbook tags.yml --list-tags
+# LISTAR TAREAS DE LA ETIQUETA DE DESARROLLO
+ansible-playbook tags.yml --list-task -t desalloro
+# SALTAR TAREAS QUE TENGA EL TAG desalloro Y test
+ansible-playbook tags.yml --skip-tags desarrollo,test
+# EJECUTAR TODAS LAS QUE TENGAN ETIQUETA OMITIENDO LAS QUE NO TIENEN
+ansible-playbook tags.yml --tags tagged
+# EJECUTAR TODAS LAS QUE TENGAN NO TIENEN ETIQUETA
+ansible-playbook tags.yml --tags untagged
+# NO EJECUTRA LAS TAREAS CON LA TAGS always
+ansible-playbook tags.yml --skip-tags always

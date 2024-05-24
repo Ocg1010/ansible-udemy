@@ -1,0 +1,5 @@
+# LA PRIMERA OPCION ES PONERLO EN EL ARCHIVO DE CONFIGURACION
+[defaults]
+
+inventory=./maquinas
+log_path=/tmp/ansible.log

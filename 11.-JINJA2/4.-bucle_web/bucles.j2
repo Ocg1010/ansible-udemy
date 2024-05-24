@@ -1,0 +1,17 @@
+{# Se utilizan las mismas que en Ansible
+ loop con una coleccion
+
+ for variable in Lista
+  operaciones
+ endfor
+
+ #}
+
+ <h1> Lista de productos </h1>
+ <h2> Estos son los productos de la tienda </h2>
+ <ol>
+  {%for producto in productos %}
+    <li> {{ producto }} </li}
+  {% endfo %}
+</ol>  
+  
