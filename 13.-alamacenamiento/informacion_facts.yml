@@ -1,0 +1,41 @@
+---
+- name: Ver datos de los discos ansible_facts
+  hosts: ubuntu_server
+  tasks:
+    # MOSTRAR LAS LINEAS QUE POMITEN LAS KEYS QUE TENGAN loop
+    - name: Modulo para recopilar devices usando el filtro reject de Jinja2
+      ansible.builtin.set_fact:
+        dispositivos: "{{ ansible_facts['devices'].keys() | reject ('match','^loop(.*)$') | list  }}"
+    - name: Visualizar los dispositivos encontrados
+      ansible.builtin.debug:
+        var: dispositivos
+
+    ############### MOSTRAR LOS QUE CUMPLAN CIERTO VALOR ###############################
+    # MOSTRAR  LOS DISCOS QUE CUMPLAN CON LA REG sd
+    - name: Ver solo los dispositivos sd usando el filtro select de Jinja2
+      ansible.builtin.set_fact:
+        discos: "{{ ansible_facts['devices'].keys()  | select('match', '^sd(.*)$') | list }}"
+      register: discos
+    - name: Visualizar los discos
+      ansible.builtin.debug:
+        var: discos
+
+    ####################### VER LAS PARTICIONES QUE TIENEN ################################
+    - name: Ver informacion de particiones
+      ansible.builtin.debug:
+        msg: "Particion {{ item  }} --> {{ ansible_devices['item'].partitions  }}"
+################################## HACER UN BUCLE PARA SABER EL NOMBRE DE CADA PARTICION ############################################
+
+################################## INFORMACION CON COMANDOS SHELL #####################
+---
+- name: Ver datos de los discos con comandos
+  hosts: rhel1
+  tasks:
+    - name: Ver los discos a traves de comandos
+      ansible.builtin.shell:
+        cmd: ls /dev/sd*
+      register: discos
+
+    - name: Visualizar discos y particiones
+      ansible.builtin.debug:
+        msg: "{{ discos.stdout  }} | split('\n')"

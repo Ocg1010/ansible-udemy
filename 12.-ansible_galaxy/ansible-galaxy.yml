@@ -1,0 +1,37 @@
+# NOS MUESTRA QUE TENEMOS INSTALADO BUSCA EN TRES DIRECTORIOS
+# /root/.ansible/roles
+# /usr/share/ansible/roles
+# /etc/ansible/roles
+ansible-galaxy list
+
+# INSTALAR UN ROL 
+ansible-galaxy install geerlingguy.nodejs
+ansible-galaxy list
+
+# LISTAR LOS ROLES INSTRALADOS
+ansible-galaxy role list
+
+# SACAR INFORMACION DEL ROL
+ansible-galaxy rol info geerlingguy.nodejs
+
+# BUSCAR ROLES, EN ESTE CASO TODOS LOS ROLES QUE TENGAN RELACIONADO ALGO CON PHP
+ansible-galaxy role search php
+ansible-galaxy role search php | grep install
+
+# REMOVER EL ROLE DE MI ENTORNO LOCAL
+ansible-galaxy remove geerlingguy.nodejs
+
+# ELIMINAR EL ROL SI ESTA VINCULADO A GALAXY
+ansible-galaxy delete geerlingguy.nodejs
+
+# USAR UN ROLE
+---
+- name: Instalar NODEJS
+  hosts: debian1
+  roles:
+   - geerlingguy.nodejs
+  pre_tasks:
+    - name: Instalar Node.js
+      ansible.builtin.debug:
+        msg: Instalar Node.js a traves de un rol de Galaxy
+

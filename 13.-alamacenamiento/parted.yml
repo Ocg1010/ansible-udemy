@@ -1,0 +1,119 @@
+---
+- name: Trabajar con mudlos de parted
+  hosts: ubuntu_server
+  tasks:
+    - name: Ver informacion de sdb
+      community.general.parted:
+        device: /dev/sdb
+        state: info
+      register: datos
+
+    - name: Ver los datos
+    ansible.builtin.debug:
+      var: datos
+
+############################## CREAR UNA PARTICION ################################
+
+    - name: Crear una particion
+      ansible.builtin.parted:
+        device: /dev/sdb
+        number: 1
+        part_end: 5GiB
+        state: present
+
+    - name: Ver datos de sdb
+      community.general.parted:
+        device: /dev/sdb
+        state: info
+      register: datos
+
+    - name: Ver los datos
+      ansible.builtin.debug:
+        var: datos
+
+########################## CREAR UN SITEMA DE FICHEROS ###############################
+    - name: Crear sistema de ficheros
+      community.general.filesystem:
+        dev: /dev/sdb1
+        fstype: ext4
+        state: present
+
+############################# MONTAR UN SISTEMA DE FICHEROS ########################
+    - name: Crear un punto de montaje
+      ansible.builtin.file:
+        path: /datos
+        state: directory
+
+    - name: Montar sistema de ficheros
+      ansible.builtin.mount:
+        path: /datos
+        src: /dev/sdb1
+        fstype: ext4
+        state: mounted
+
+########################### CREAR PARTICION PARA LVL ############################
+
+    - name: Crear una particion en el disco nvme02n
+      community.general.parted:
+        service: /dev/nvme0n2
+        device: /dev/nvme0n2
+        parted_end: 5GiB
+        state: present
+    - name: Ver el disco
+      community.general.parted:
+        device: /dev/sbme0n2
+        state: info
+
+    - name: Visualizar resultado
+      debug:
+        var: datos
+  
+  ######################## CREAR UN VOLUME GROUP ######################################
+    - name: Crear un volume Group en las particiones 
+      community.general.lvg:
+        vg: grupo1
+        pvs: 
+          - /dev/nvme0n2p1
+          - /dev/nvme0n3p1
+
+    - name: Recuperar informacion de los vg:
+      ansible.builtin.shell:
+        cmd: 'vgdisplay | grep "VG Name"'
+      register: datos
+
+    - name: Ver informacion
+      ansible.builtin.debug:
+        var: datos
+############################# CREAR UN LOGICAL VOLUNME ##############################
+    - name: Crear un volumen logico en el grupo grupo1
+      community.general.lvol:
+        vg: grupo1
+        lv: vol1
+        size: 5 12
+
+    - name: Recuperar informacion
+      ansible.builtin.shell:
+        cmd: 'lvdisplay | grep "LV Name"'
+      register: datos
+
+    - name: Visualizar informacion
+      ansible.builtin.debug:
+        var: datos
+############################ CREAR Y MONTAR EL SISTEMA DE FICHEROS ###################
+    - name: Crear sistema de ficheros
+      community.general.filesystem:
+        dev: /dev/grupo1/vol1
+        fstype: ext4
+        state: present
+
+    - name: Crear un punto de montaje
+      ansible.builtin.file:
+        path: /documentos
+        state: directory
+
+    - name: Montar el sistema de ficheros
+      ansible.posix.mount:
+        path: /documentos
+        src: /dev/grupo1/vol1
+        fstype: ext4
+        state: mounted
