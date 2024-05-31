@@ -1,0 +1,6 @@
+---
+usuarios:
+  - name: user1
+    pass: prueba
+  - name: user2
+    pass: prueba

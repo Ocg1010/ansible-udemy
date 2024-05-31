@@ -1,0 +1,103 @@
+---
+- name: Descargar imagen Docker
+  hosts: rhel
+  tasks:
+    - name: Crear un contenedor con Busybox
+      community.docker.docker_container:
+        name: contenedor1
+        image: busybox
+        state: started
+################### CREAR CONTENEDOR EN MODO INTERACTIVO ##########################
+
+- name: Descargar imagen Docker
+  hosts: ubuntu_server
+  tasks:
+    - name: Crear un contenedor inteactivo con Debian
+      community.docker.docker_container:
+        name: contenedor rhel
+        image: rhel
+        state: started
+        iteractive: true
+########################## CREAR CONTENEDOR EN BACKGROUND #############################
+- name: Descargar imagen docker
+  hosts: rhel1
+  tasks:
+    - name: Crear un contenedor en background
+      community.docker.docker_container:
+        name: contenedor_tomcat
+        image: mi-tomcat
+        state: started
+        detach: yes
+###################### BORRAR UN CONTENEDOR Y CONFIGURAR UN PUERTO ####################
+- name:
+  hosts: rhel
+  tasks:
+    - name: Borrar el contenedor
+      community.docker.docker_container:
+        name: contenedor_tomcat
+        state: absent
+
+- name: Crear tomcat con puertos asociados
+  community.docker.docker_container:
+    name: contenedor_tomcat
+    state: started
+    detach: true
+    image: mi-tomcat
+    ports:
+      - 9000-8080
+############################ CREAR UNA RED DOCKER ####################################
+- name: Descargar imagen Docker
+  hosts: ubuntu_server
+  tasks:
+    - name: Crear un red Docker
+      community.docker.docker_network:
+        name: red1
+        ipam_config:
+          - subnet: 172.18.2.8./16
+            gateway: 172.18.2.1
+############################## CREAR UN CONTENEDOR ASOCIADO A ESA RED ###################
+- name: Crear un contenedor asociado a una red
+  hosts: rhel
+  tasks:
+    - name:
+      community.docker.docker_container:
+        name: ngnix1
+        image: ngnix
+        ports:
+          - 9090:80
+        networks:
+          - name: red1
+        detach: true
+
+######################################## EJEMPLO BINDS CON DOCKER #####################
+- name: Trabajar con un volumen bind
+  hosts: rhel
+  tasks:
+    - name: Crear un contenedor ngnix
+      community.docker.docker_contariner:
+        name: ngnix3
+        image: ngxix
+        ports:
+          - 9101:80
+        detach: true
+        volumes:
+          - "/datos:/usr/share/ngnix/html"
+
+    - name: Copiar a /datos la pagina WEB
+      ansible.builtin.copy:
+        src: index.html
+        dest: /datos
+############################## VARIABLES #########################################
+- name: Trabajar con variables
+  hosts: rhel1
+  tasks:
+    - name: Crear un contenedor Mariadb
+      community.docker.docker_container:
+        name: mariadb1
+        image: mariadb
+        detach: true
+        env:
+          MARIADB_ROOT_PASSWORD: "lepanto"
+          MARIADB_DATABASE: "db1"
+          MARIADB_USER: "usu1"
+          MARIADB_PASSWORD: "lepnto"

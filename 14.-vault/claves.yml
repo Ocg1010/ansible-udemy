@@ -1,0 +1,16 @@
+pass: prueba
+pass1: prueba1
+# ansible-vault encrypt claves.yml
+
+# CREAR NUEVO FICHERO PARA ENCRYPTARLO
+ansible-vault encrypt claves2.yml --output claves_encriptado.yaml
+
+# CREAR UN FICHERO ENCRYPTADO DESDE CERO
+ansible-vault create claves3.yml
+
+# HACER QUE LA CLAVE LA SAQUE DE UN FICHERO
+ansible-vault view claves.yaml --vault-password-file=claves.yml
+
+# QUE PIDA LA PASSWORD EN EL PROMPT (ES LA DE POR DEFECTO)
+ansible-vault view claves.yaml --ask-vault-pass
+
